@@ -1,2 +1,7 @@
 # gamewish
- 
+
+Live Link: https://n423-cb-final.web.app/
+
+This is an application that allows you to keep track of video games you want as well as get recommendations based on your wanted games. When you're on the home page, you can will see options to search for video games by the genre with the boxes below the search bar. You will also be able to search for games by title using the search bar. With the results displayed, you will be able to click on a specific game to get more detailed information about it. On the results page you will see a heart icon and on the information page you will see an add to wishlist button. Both will allow you to add a game to your wishlist. You will have to be signed in to wishlist the game.
+
+Once you're signed in, you will see a profile dropdown in the nav. Here you will be able to access your profile, wishlist, recommendations or sign out. In your profile you can update your name, email, and password it will have buttons to access your wishlist and recommendations. On your wishlist, you will see all the games that you hearted or hit the add to wishlist button on. Here you will also be able to see more detailed information of the game by clicking and you can remove a game from your wishlist with the heart icon. On your recommendations, you will be shown games of the most prevelant genre in your wishlist. You will have the same options of clicking the heart icon to add to your wishlist or clicking on the game for more information and adding to your wishlist from there.
