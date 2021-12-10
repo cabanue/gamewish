@@ -5,6 +5,7 @@ var searchTerm = "";
 var genreID = 0;
 var genreName = "";
 var pageNum = 0;
+var categories = [];
 
 function initFirebase() {
   firebase.auth().onAuthStateChanged(function (user) {
@@ -18,33 +19,6 @@ function initFirebase() {
       $(".nav__right__profile").css("display", "none");
     }
   });
-}
-
-function game() {
-  // let genresCount = [
-  //   {
-  //     name: action,
-  //     count: 2,
-  //   },
-  //   {
-  //     name: adventure,
-  //     count: 4,
-  //   },
-  // ];
-  // const genresCount = [1, 2, 3, 4, 5];
-  // console.log(Math.max(...genresCount));
-  // $.get(
-  //   `https://api.rawg.io/api/games?search=xenoblade&key=${key}&page=1`,
-  //   function (data) {
-  //     console.log(data);
-  //   }
-  // );
-  // $.get(
-  //   `https://api.rawg.io/api/games?genre=4&key=${key}&page=1`,
-  //   function (data) {
-  //     console.log(data);
-  //   }
-  // );
 }
 
 function login() {
@@ -76,6 +50,7 @@ function logout() {
     .signOut()
     .then(() => {
       console.log("signed out");
+      window.location.hash = "#/home";
     })
     .catch((error) => {
       console.log(error);
@@ -167,7 +142,7 @@ function displayGame(game, index) {
   $(".games").append(`
   <div class="game" id="${index}">
     <p class="game__title" onclick="gameInfo(${game.id})">${game.name}</p>
-    <div class="game__image" style="background-image: url(${game.background_image});" onclick="gameInfo(${game.id})"></div>
+    <div class="game__image" style="background-image: url(${game.background_image});" onclick="gameInfo(${game.id})" alt="no image"></div>
     <p class="game__platforms" onclick="gameInfo(${game.id})">Platforms: <span id="platforms${index}"></span></p>
     <div class="game__heart">
     <i class="far fa-heart" id="add${index}" onclick="addToWishlist(${index}, ${game.id})"></i>
@@ -178,6 +153,12 @@ function displayGame(game, index) {
   $.each(game.platforms, function (ind, platform) {
     $(`#platforms${index}`).append(`${platform.platform.name}, `);
   });
+  if (!game.background_image) {
+    $(`#${index} .game__image`).attr(
+      "style",
+      "background-image: url(images/no-image.jpg);"
+    );
+  }
   let currentUse = firebase.auth().currentUser;
   _db = firebase.firestore();
 
@@ -226,6 +207,44 @@ function displayWishlist() {
     });
 }
 
+function displayRecommendations() {
+  let currentUse = firebase.auth().currentUser;
+  _db = firebase.firestore();
+  const genreCount = [];
+
+  _db
+    .collection(currentUse.uid)
+    .get()
+    .then((querySnapshot) => {
+      $.each(categories, function (index, category) {
+        querySnapshot.forEach((doc) => {
+          $.each(doc.data().genres, function (index, gameGenre) {
+            if (gameGenre.name == category.name) {
+              category.count++;
+            }
+          });
+        });
+      });
+      $.each(categories, function (index, num) {
+        genreCount.push(num.count);
+      });
+      let highestNum = Math.max(...genreCount);
+      $.each(categories, function (index, category) {
+        if (category.count == highestNum) {
+          genreName = category.name;
+          genreID = category.id;
+          pageNum = 1;
+          searchTerm = "";
+          displaySearch();
+          return false;
+        }
+      });
+    })
+    .catch((error) => {
+      console.log("data not obtained");
+    });
+}
+
 function homeCategories() {
   $.get(`https://api.rawg.io/api/genres?key=${key}`, function (data) {
     $.each(data.results, function (index, genre) {
@@ -243,11 +262,25 @@ function homeCategories() {
   });
 }
 
+function getGenres() {
+  $.get(`https://api.rawg.io/api/genres?key=${key}`, function (data) {
+    $.each(data.results, function (index, genre) {
+      let genreObj = {
+        name: genre.name,
+        count: 0,
+        id: genre.id,
+      };
+      categories.push(genreObj);
+    });
+  });
+}
+
 function displayGenreGames(genre, name) {
   pageNum = 1;
   genreID = genre;
   genreName = name;
   searchTerm = "";
+  window.location.hash = "#/search";
   displaySearch();
 }
 
@@ -259,38 +292,70 @@ function displayProfile() {
 }
 
 function displaySearch() {
-  window.location.hash = "#/search";
   if (searchTerm == "") {
     $.get(
-      `https://api.rawg.io/api/games?genre=4&key=${key}&page=${pageNum}`,
+      `https://api.rawg.io/api/games?genres=${genreID}&key=${key}&page=${pageNum}`,
       function (data) {
         $("#searchterm").html(`${genreName}`);
+        $("#pageNum").html(`${pageNum}`);
         $.each(data.results, function (index, game) {
           displayGame(game, index);
         });
-        // if (data.next) {
-
-        // }
-        // $.get(data.next, function (data) {
-        //   $.each(data.results, function (index, game) {
-        //     let newInd = index + 20;
-        //     displayGame(game, newInd);
-        //   });
-        // });
+        if (data.next) {
+          $(".fa-chevron-circle-right").css("display", "block");
+        } else {
+          $(".fa-chevron-circle-right").css("display", "none");
+        }
+        if (pageNum == 1) {
+          $(".fa-chevron-circle-left").css("display", "none");
+        } else {
+          $(".fa-chevron-circle-left").css("display", "block");
+        }
       }
     );
   } else if (genreID == 0) {
     $.get(
-      `https://api.rawg.io/api/games?search=${searchTerm}&key=${key}`,
+      `https://api.rawg.io/api/games?search=${searchTerm}&key=${key}&page=${pageNum}`,
       function (data) {
+        console.log(data);
         $("#searchterm").html(`${searchTerm}`);
+        $("#pageNum").html(`${pageNum}`);
         $.each(data.results, function (index, game) {
           displayGame(game, index);
         });
+        if (data.next) {
+          $(".fa-chevron-circle-right").css("display", "block");
+        } else {
+          $(".fa-chevron-circle-right").css("display", "none");
+        }
+
+        if (pageNum == 1) {
+          $(".fa-chevron-circle-left").css("display", "none");
+        } else {
+          $(".fa-chevron-circle-left").css("display", "block");
+        }
       }
     );
-    $("#searchterm").html(`${searchTerm}`);
   }
+}
+
+function changePage() {
+  console.log($(this).hasClass("fa-chevron-circle-right"));
+  if ($(this).hasClass("fa-chevron-circle-left")) {
+  } else if ($(this).hasClass("fa-chevron-circle-right")) {
+  }
+}
+
+function previousPage() {
+  pageNum--;
+  $(".games").empty();
+  displaySearch();
+}
+
+function nextPage() {
+  pageNum++;
+  $(".games").empty();
+  displaySearch();
 }
 
 function loadGameInfo() {
@@ -333,29 +398,34 @@ function gameInfo(id) {
 }
 
 function addToWishlist(id, gameid) {
-  let gameObj = {
-    gameid: gameid,
-  };
+  $.get(`https://api.rawg.io/api/games/${gameid}?key=${key}`, function (data) {
+    let gameGenres = data.genres;
 
-  let currentUse = firebase.auth().currentUser;
-  _db = firebase.firestore();
+    let gameObj = {
+      gameid: gameid,
+      genres: gameGenres,
+    };
 
-  if (currentUse) {
-    _db
-      .collection(currentUse.uid)
-      .doc()
-      .set(gameObj)
-      .then(function (doc) {
-        console.log("success");
-        $(`#add${id}`).css("display", "none");
-        $(`#remove${id}`).css("display", "block");
-      })
-      .catch((error) => {
-        console.log("game not added to wishlist");
-      });
-  } else {
-    console.log("you must be signed in");
-  }
+    let currentUse = firebase.auth().currentUser;
+    _db = firebase.firestore();
+
+    if (currentUse) {
+      _db
+        .collection(currentUse.uid)
+        .doc()
+        .set(gameObj)
+        .then(function (doc) {
+          console.log("success");
+          $(`#add${id}`).css("display", "none");
+          $(`#remove${id}`).css("display", "block");
+        })
+        .catch((error) => {
+          console.log("game not added to wishlist");
+        });
+    } else {
+      console.log("you must be signed in");
+    }
+  });
 }
 
 function removeFromWishlist(id, gameid) {
@@ -391,6 +461,8 @@ function loadPage(pageID) {
       if (e.keyCode == 13) {
         searchTerm = $("#search").val();
         genreID = 0;
+        pageNum = 1;
+        window.location.hash = "#/search";
         displaySearch();
       }
     });
@@ -400,8 +472,9 @@ function loadPage(pageID) {
     loadGameInfo();
   } else if (pageID == "wishlist") {
     displayWishlist();
-  } else if (pageID == "recommedations") {
-    console.log("hi");
+  } else if (pageID == "recommendations") {
+    // console.log("hi");
+    displayRecommendations();
   }
 }
 
@@ -436,7 +509,8 @@ $(document).ready(function () {
     let app = firebase.app();
     initFirebase();
     initListeners();
-    game();
+    getGenres();
+    // game();
   } catch {
     console.error("yes");
   }

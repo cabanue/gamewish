@@ -17,3 +17,19 @@ h6,
 p {
   margin-bottom: 16px;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  i {
+    color: white;
+    margin-right: 20px;
+  }
+  p {
+    color: white;
+    font-size: 30px;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+}

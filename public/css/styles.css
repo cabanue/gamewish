@@ -21,6 +21,28 @@ p {
   margin-bottom: 16px;
 }
 
+.pagination {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.pagination i {
+  color: white;
+  margin-right: 20px;
+}
+.pagination p {
+  color: white;
+  font-size: 30px;
+  margin-right: 20px;
+  margin-bottom: 0;
+}
+
 nav {
   padding: 40px;
   display: -webkit-box;
@@ -167,7 +189,7 @@ footer a {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  height: 200px;
+  height: 250px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
