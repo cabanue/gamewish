@@ -1,0 +1,14 @@
+@import "variables.scss";
+@import "structure.scss";
+
+@import "nav.scss";
+@import "footer.scss";
+@import "games.scss";
+
+@import "../pages/home/home.scss";
+@import "../pages/login/login.scss";
+@import "../pages/search/search.scss";
+@import "../pages/game-info/game-info.scss";
+@import "../pages/profile/profile.scss";
+// @import "../pages/wishlist/wishlist.scss";
+@import "../pages/recommendations/recommendations.scss";

@@ -1,0 +1,71 @@
+.game-info {
+  width: 70%;
+  margin: 0 auto;
+  &__top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    &__left {
+      height: 400px;
+      width: 300px;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    &__right {
+      color: white;
+      font-size: 30px;
+      width: 40%;
+      padding: 40px;
+      background-color: $site-purple;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      &__title {
+      }
+      &__platforms {
+      }
+      &__publishers {
+      }
+      &__wishlist {
+        height: 60px;
+        font-size: 30px;
+        background-color: $site-blue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        p {
+          margin-bottom: 0;
+        }
+        i {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+  &__description {
+    padding: 15px;
+    color: white;
+    margin: 40px auto;
+    height: fit-content;
+    width: 70%;
+    background-color: $site-purple;
+  }
+  &__screenshots {
+    margin: 40px auto;
+    height: 300px;
+    width: 70%;
+    background-color: $site-purple;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px 10px;
+    padding: 10px;
+    .screenshot {
+      height: 100px;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+  }
+}

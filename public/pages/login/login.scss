@@ -1,0 +1,31 @@
+.login {
+  display: flex;
+  color: white;
+  input {
+    width: 250px;
+    height: 35px;
+    margin-bottom: 30px;
+    padding-left: 10px;
+    background-color: $site-input;
+    color: white;
+    cursor: pointer;
+  }
+  input::placeholder {
+    color: white;
+  }
+  &__container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &__but {
+      background-color: $site-blue;
+      border-radius: 30px;
+      height: 40px;
+      width: 175px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

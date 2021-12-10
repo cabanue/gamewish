@@ -1,0 +1,36 @@
+nav {
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 30px;
+  a {
+    text-decoration: none;
+    color: white;
+  }
+  .nav__right {
+    &__profile {
+      display: none;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      a {
+        margin-bottom: 10px;
+      }
+      .dropdown {
+        font-size: 20px;
+        padding: 10px;
+        display: flex;
+        text-align: center;
+        flex-direction: column;
+        position: absolute;
+        background-color: $site-purple;
+        bottom: -150px;
+        left: -50px;
+        z-index: 5;
+      }
+      .hidden {
+        display: none;
+      }
+    }
+  }
+}
