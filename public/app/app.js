@@ -415,11 +415,13 @@ function loadGameInfo() {
             $("#remove").css("display", "none");
           });
         } else {
+          $("#add").css("display", "none");
+          $("#remove").css("display", "flex");
         }
       });
     } else {
-      $("#add").css("display", "none");
-      $("#remove").css("display", "flex");
+      $("#add").css("display", "flex");
+      $("#remove").css("display", "none");
     }
   });
 }
