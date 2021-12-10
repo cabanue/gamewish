@@ -6,6 +6,14 @@ var genreID = 0;
 var genreName = "";
 var pageNum = 0;
 var categories = [];
+const options = {
+  style: {
+    main: {
+      background: "#f3f3f3",
+      color: "black",
+    },
+  },
+};
 
 function initFirebase() {
   firebase.auth().onAuthStateChanged(function (user) {
@@ -31,7 +39,8 @@ function login() {
     .then((userCredential) => {
       // Signed in
       var user = userCredential.user;
-      console.log("signed in");
+
+      iqwerty.toast.toast("signed in", options);
 
       let password = $("#login-password").val("");
       let email = $("#login-email").val("");
@@ -49,7 +58,7 @@ function logout() {
     .auth()
     .signOut()
     .then(() => {
-      console.log("signed out");
+      iqwerty.toast.toast("signed out", options);
       window.location.hash = "#/home";
     })
     .catch((error) => {
@@ -79,7 +88,6 @@ function changeEmail(email) {
 
 function resetPass(password) {
   let currentUse = firebase.auth().currentUser;
-  console.log(typeof password);
 
   currentUse
     .updatePassword(password)
@@ -105,6 +113,7 @@ function updateAcc() {
   if (newEmail) {
     changeEmail(newEmail);
   }
+  iqwerty.toast.toast("update successful", options);
 }
 
 function createAcc() {
@@ -114,7 +123,6 @@ function createAcc() {
   let lName = $("#lName").val();
 
   let fullName = fName + " " + lName;
-  console.log(fullName);
 
   firebase
     .auth()
@@ -124,6 +132,8 @@ function createAcc() {
       var user = userCredential.user;
 
       updateUser(fullName);
+
+      iqwerty.toast.toast("account created", options);
 
       $("#cPass").val("");
       $("#cEmail").val("");
@@ -288,7 +298,6 @@ function displayProfile() {
   let currentUse = firebase.auth().currentUser;
   $("#displayName").val(`${currentUse.displayName}`);
   $("#email").val(`${currentUse.email}`);
-  console.log(currentUse);
 }
 
 function displaySearch() {
@@ -339,13 +348,6 @@ function displaySearch() {
   }
 }
 
-function changePage() {
-  console.log($(this).hasClass("fa-chevron-circle-right"));
-  if ($(this).hasClass("fa-chevron-circle-left")) {
-  } else if ($(this).hasClass("fa-chevron-circle-right")) {
-  }
-}
-
 function previousPage() {
   pageNum--;
   $(".games").empty();
@@ -369,7 +371,8 @@ function loadGameInfo() {
           <p class="game-info__top__right__title">${data.name}</p>
           <p class="game-info__top__right__platforms"></p>
           <p class="game-info__top__right__publishers"></p>
-          <div class="game-info__top__right__wishlist"><p>Add to Wishlist <i class="far fa-heart"></i></p> </div>
+          <div class="game-info__top__right__wishlist" id="add" onclick="addToWishlist(0, ${data.id})"><p>Add to Wishlist <i class="far fa-heart"></i></p> </div>
+          <div class="game-info__top__right__wishlist" id="remove" onclick="removeFromWishlist(0, ${data.id})"><p>Remove from Wishlist <i class="far fa-heart"></i></p> </div>
         </div>
         </div>
         <div class="game-info__description">
@@ -379,6 +382,14 @@ function loadGameInfo() {
 
       </div>
       `);
+    $.each(data.platforms, function (ind, platform) {
+      $(".game-info__top__right__platforms").append(
+        `${platform.platform.name}, `
+      );
+    });
+    $.each(data.publishers, function (ind, publisher) {
+      $(".game-info__top__right__publishers").append(`${publisher.name}, `);
+    });
     $.get(
       `https://api.rawg.io/api/games/${gameID}/screenshots?key=${key}`,
       function (screenshots) {
@@ -389,6 +400,27 @@ function loadGameInfo() {
         });
       }
     );
+    let currentUse = firebase.auth().currentUser;
+    _db = firebase.firestore();
+
+    if (currentUse) {
+      var game = _db
+        .collection(currentUse.uid)
+        .where("gameid", "==", Number(data.id));
+
+      game.get().then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          game.onSnapshot((doc) => {
+            $("#add").css("display", "flex");
+            $("#remove").css("display", "none");
+          });
+        } else {
+        }
+      });
+    } else {
+      $("#add").css("display", "none");
+      $("#remove").css("display", "flex");
+    }
   });
 }
 
@@ -415,15 +447,18 @@ function addToWishlist(id, gameid) {
         .doc()
         .set(gameObj)
         .then(function (doc) {
-          console.log("success");
-          $(`#add${id}`).css("display", "none");
-          $(`#remove${id}`).css("display", "block");
+          iqwerty.toast.toast("game added to wishlist", options);
+          if (window.location.hash != "#/game-info") {
+            $(`#add${id}`).css("display", "none");
+            $(`#remove${id}`).css("display", "block");
+          } else {
+          }
         })
         .catch((error) => {
-          console.log("game not added to wishlist");
+          iqwerty.toast.toast("problem adding game to wishlist", options);
         });
     } else {
-      console.log("you must be signed in");
+      iqwerty.toast.toast("you must be signed in to wishlist", options);
     }
   });
 }
@@ -440,17 +475,20 @@ function removeFromWishlist(id, gameid) {
     .then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
         doc.ref.delete();
-        console.log("deleted");
-        $(`#add${id}`).css("display", "block");
-        $(`#remove${id}`).css("display", "none");
+        iqwerty.toast.toast("game removed from wishlist", options);
+
         if (window.location.hash == "#/wishlist") {
-          // MODEL.getPageData("wishlist", loadPage);
           $(`#${id}`).remove();
+        }
+        if (window.location.hash != "#/game-info") {
+          $(`#add${id}`).css("display", "block");
+          $(`#remove${id}`).css("display", "none");
+        } else {
         }
       });
     })
     .catch((error) => {
-      console.log("not deleted");
+      iqwerty.toast.toast("problem removing from wishlist", options);
     });
 }
 
@@ -473,7 +511,6 @@ function loadPage(pageID) {
   } else if (pageID == "wishlist") {
     displayWishlist();
   } else if (pageID == "recommendations") {
-    // console.log("hi");
     displayRecommendations();
   }
 }
@@ -510,7 +547,6 @@ $(document).ready(function () {
     initFirebase();
     initListeners();
     getGenres();
-    // game();
   } catch {
     console.error("yes");
   }
