@@ -36,3 +36,25 @@
     }
   }
 }
+
+@media only screen and (max-width: 1050px) {
+  .home {
+    &__search {
+      width: 90%;
+    }
+    &__categories {
+      width: 90%;
+      gap: 40px;
+    }
+  }
+}
+
+@media only screen and (max-width: 570px) {
+  .home {
+    &__search {
+    }
+    &__categories {
+      grid-template-columns: 1fr;
+    }
+  }
+}

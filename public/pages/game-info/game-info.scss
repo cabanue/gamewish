@@ -56,18 +56,83 @@
   }
   &__screenshots {
     margin: 40px auto;
-    height: 300px;
+    height: fit-content;
     width: 70%;
     background-color: $site-purple;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 10px 10px;
+    gap: 30px 10px;
     padding: 10px;
     .screenshot {
       height: 100px;
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
+    }
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .game-info {
+    width: 80%;
+    &__screenshots {
+      gap: 10px 10px;
+    }
+  }
+}
+
+@media only screen and (max-width: 880px) {
+  .game-info {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 775px) {
+  .game-info {
+    width: 90%;
+    &__top {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column-reverse;
+      &__left {
+        width: 70%;
+      }
+      &__right {
+        width: 70%;
+        margin-bottom: 40px;
+      }
+    }
+    &__screenshots {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+}
+
+@media only screen and (max-width: 660px) {
+  .game-info {
+    &__top {
+      &__left {
+        width: 90%;
+      }
+      &__right {
+        width: 90%;
+      }
+    }
+    &__description {
+      width: 90%;
+      font-size: 18px;
+    }
+    &__screenshots {
+      width: 90%;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .game-info {
+    &__screenshots {
+      grid-template-columns: 1fr;
     }
   }
 }

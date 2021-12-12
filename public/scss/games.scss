@@ -46,3 +46,28 @@
     }
   }
 }
+
+@media only screen and (max-width: 1050px) {
+  .games {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .games {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  .games {
+    gap: 20px;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .games {
+    grid-template-columns: 1fr;
+  }
+}
