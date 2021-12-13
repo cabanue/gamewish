@@ -58,6 +58,7 @@
       font-size: 30px;
       height: 70px;
       background-color: $site-blue;
+      text-align: center;
     }
   }
   &__but {
@@ -70,5 +71,38 @@
     margin: 30px auto;
     background-color: $site-blue;
     border-radius: 20px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .profile {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 690px) {
+  .profile {
+    &__container {
+      width: 90%;
+    }
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .profile {
+    &__container {
+      &__input {
+        flex-direction: column;
+        input {
+          width: 90%;
+        }
+      }
+      &__but {
+        width: 80%;
+      }
+    }
+    &__but {
+      width: 90%;
+    }
   }
 }
