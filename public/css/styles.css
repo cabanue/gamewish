@@ -562,6 +562,7 @@ footer a {
   text-align: center;
 }
 .profile__but {
+  cursor: pointer;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

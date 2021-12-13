@@ -494,6 +494,14 @@ function removeFromWishlist(id, gameid) {
     });
 }
 
+function wishlistPage() {
+  window.location.hash = "#/wishlist";
+}
+
+function recPage() {
+  window.location.hash = "#/recommendations";
+}
+
 function loadPage(pageID) {
   if (pageID == "home") {
     homeCategories();
